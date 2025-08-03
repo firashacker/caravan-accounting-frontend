@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiInstance from "../../lib/axios";
 import type { PayloadAction } from "@reduxjs/toolkit";
-export interface Employee {
+export interface EmployeeType {
   id: number;
   name: string;
   dayly: number;
@@ -13,12 +13,12 @@ export interface Employee {
 }
 
 export interface Employees {
-  employees: Employee[];
+  employeeList: EmployeeType[];
   status: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const InitialState: Employees = {
-  employees: [],
+  employeeList: [],
   status: "idle",
 };
 
@@ -26,8 +26,8 @@ const employeeSlice = createSlice({
   name: "employees",
   initialState: InitialState,
   reducers: {
-    setEmployees: (state, action: PayloadAction<Employee[]>) => {
-      state.employees = action.payload;
+    addEmployee: (state, action: PayloadAction<EmployeeType>) => {
+      state.employeeList = [...state.employeeList, action.payload];
     },
   },
   extraReducers: (builder) => {
@@ -38,9 +38,21 @@ const employeeSlice = createSlice({
       })
       .addCase(
         fetchEmployees.fulfilled,
-        (state, action: PayloadAction<Employee[]>) => {
-          //state.status = "succeeded";
-          state.employees = action.payload;
+        (state, action: PayloadAction<EmployeeType[]>) => {
+          state.status = "succeeded";
+          state.employeeList = action.payload;
+          //console.log(state.employees);
+        },
+      )
+      .addCase(fetchEmployeesIfNeeded.pending, (state) => {
+        console.log("pending Promise Employee");
+        state.status = "loading";
+      })
+      .addCase(
+        fetchEmployeesIfNeeded.fulfilled,
+        (state, action: PayloadAction<EmployeeType[]>) => {
+          state.status = "succeeded";
+          state.employeeList = action.payload;
         },
       );
     /* .addCase(fetchEmployees.rejected, (state) => {
@@ -48,6 +60,18 @@ const employeeSlice = createSlice({
         });*/
   },
 });
+// Define the async thunk for fetching data
+export const fetchEmployeesIfNeeded = createAsyncThunk(
+  "employees/fetchEmployeesIfNeeded", // Action type prefix
+  async (employeeList: EmployeeType[]) => {
+    if (!(employeeList.length > 0)) {
+      const response = await apiInstance.get("/api/employee");
+      return response.data;
+    }
+    return employeeList;
+  },
+);
+
 // Define the async thunk for fetching data
 export const fetchEmployees = createAsyncThunk(
   "employees/fetchEmployees", // Action type prefix
@@ -57,5 +81,5 @@ export const fetchEmployees = createAsyncThunk(
   },
 );
 
-export const { setEmployees } = employeeSlice.actions;
+export const { addEmployee } = employeeSlice.actions;
 export default employeeSlice.reducer;

@@ -6,20 +6,19 @@ import {
   //faBucket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import logo from "../assets/react.svg";
-
+import logo from "../assets/Caravan.svg";
 const mapNavElements = [
-  {
-    id: 1,
-    title: "الصفحة الرئيسية",
-    path: "/categories",
-    icon: faHouse,
-  },
   {
     id: 2,
     title: "العمال",
     path: "/employees",
     icon: faHammer,
+  },
+  {
+    id: 1,
+    title: "الصفحة الرئيسية",
+    path: "/",
+    icon: faHouse,
   },
 ];
 
@@ -41,11 +40,11 @@ function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="flex text-xl font-bold text-gray-800 hover:text-purple-700 transition-colors duration-200 pb-2"
+            className="invisible md:visible flex text-xl font-bold text-gray-800 hover:text-blue-500 transition-colors duration-200 pb-2"
           >
             <img className="max-h-15" src={logo} />
-            <h1 className="flex flex-col min-h-full justify-center">
-              {import.meta.env.VITE_SELLPOINT}
+            <h1 className="flex flex-col min-h-full justify-center px-2">
+              {import.meta.env.VITE_PAGE_TITLE}
             </h1>
           </Link>
 
@@ -58,7 +57,7 @@ function Navbar() {
                   className={` text-black py-2  px-4 rounded hover:opacity-90 transition duration-300  font-semibold
                   ${
                     pathname == navElement.path
-                      ? "bg-gradient-to-r from-blue-500 to-purple-600" //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
+                      ? "bg-gradient-to-bl from-purple-300 to-blue-600" //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
                       : ""
                   }`}
                 >
@@ -107,7 +106,7 @@ function Navbar() {
             className={` flex py-3  border-gray-100 px-4 rounded hover:opacity-90 transition duration-300 font-semibold
           ${
             pathname === navElement.path
-              ? "bg-gradient-to-r from-blue-500 to-purple-600" //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
+              ? "bg-gradient-to-bl from-yellow-500 to-orange-600" //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
               : ""
           }`}
           >
