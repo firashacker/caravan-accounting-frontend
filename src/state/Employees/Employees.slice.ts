@@ -7,6 +7,7 @@ export interface EmployeeType {
   paymentMethod: "dayly" | "weekly" | "monthly";
   paymentAmount: number;
   paymentUnits: number;
+  extra: number;
   balance: number;
 }
 

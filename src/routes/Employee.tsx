@@ -12,6 +12,7 @@ import { fetchEmployees } from "../state/Employees/Employees.slice";
 import { faPerson } from "@fortawesome/free-solid-svg-icons";
 import DefaultButton, {
   DangerButton,
+  SafeButton,
 } from "../components/Button/Button.component";
 import apiInstance from "../lib/axios";
 
@@ -25,29 +26,19 @@ function Employee() {
   const dispatch = useDispatch<AppDispatch>();
   const employeeId = useParams().id;
   const [employee, setEmployee] = useState<EmployeeType>();
-  const [payment, setPayment] = useState("");
-
-  const paymentType = () => {
-    switch (employee?.paymentMethod) {
-      case "dayly":
-        setPayment("ايام");
-        break;
-      case "weekly":
-        setPayment("اسابيع");
-        break;
-      case "monthly":
-        setPayment("اشهر");
-        break;
-    }
-  };
+  const [method1, setMethod1] = useState("");
+  const [method2, setMethod2] = useState("");
+  const [reset, setReset] = useState(false);
 
   useEffect(() => {
-    paymentType();
+    setMethod1(resolveMethods1);
+    setMethod2(resolveMethods2);
   }, [employee]);
+
   useEffect(() => {
     const result = employeeList.find((e) => e.id === Number(employeeId));
     setEmployee(result);
-  }, [employeeId]);
+  }, [employeeId, reset]);
 
   const handleAddDay = () => {
     if (employee) {
@@ -66,6 +57,17 @@ function Employee() {
       setEmployee({
         ...employee,
         paymentUnits: Number(employee.paymentUnits + Number(days)),
+      });
+    }
+  };
+
+  const handleAddExtra = () => {
+    const amount = prompt("قيمة الدخل نقدأ");
+    if (!amount) return;
+    if (employee) {
+      setEmployee({
+        ...employee,
+        extra: employee.extra + Number(amount),
       });
     }
   };
@@ -106,14 +108,15 @@ function Employee() {
 
   const calculateAmount = () => {
     if (employee) {
-      const result = Number(employee.paymentAmount * employee.paymentUnits);
+      const result = Number(
+        employee.paymentAmount * employee.paymentUnits + employee.extra,
+      );
       return result;
     }
     return 0;
   };
   const calculateBalance = () => {
-    if (employee)
-      return employee.paymentAmount * employee.paymentUnits - employee.balance;
+    if (employee) return calculateAmount() - employee.balance;
     else return 0;
   };
 
@@ -138,7 +141,7 @@ function Employee() {
         <tbody>
           <tr>
             <td className="border-s-slate-950 border-2 p-2">الية الحساب</td>
-            <td className="border-s-slate-950 border-2 p-2">{payment}</td>
+            <td className="border-s-slate-950 border-2 p-2">{method2}</td>
           </tr>
           <tr>
             <td className="border-s-slate-950 border-2 p-2"> المرتب</td>
@@ -149,11 +152,32 @@ function Employee() {
           <tr>
             <td className="border-s-slate-950 border-2 p-2">
               <div className="flex space-x-2">
-                <p>عدد ال{payment}</p>
+                <p>عدد ال{method2}</p>
               </div>
             </td>
             <td className="border-s-slate-950 border-2 p-2">
               {employee?.paymentUnits}
+            </td>
+          </tr>
+          <tr>
+            <td className="border-s-slate-950 border-2 p-2">
+              <div className="flex space-x-2">
+                <p>اضافي (سعر ساعات عمل اضافية او مدخولات اخرى)</p>
+              </div>
+            </td>
+            <td className="border-s-slate-950 p-2 flex">
+              ₪ {employee?.extra}
+              {employee && (
+                <p className="text-red-600 px-3 space-x-3">
+                  أي ما يعادل
+                  {" " +
+                    Number(employee?.extra / employee?.paymentAmount).toFixed(
+                      2,
+                    ) +
+                    " "}
+                  {method1}
+                </p>
+              )}
             </td>
           </tr>
           <tr>
@@ -193,14 +217,20 @@ function Employee() {
       </table>
       <div className="p-8 space-x-2">
         <DefaultButton onButtonClick={handleAddDay}>
-          اضافة {resolveMethods1()}
+          اضافة {method1}
         </DefaultButton>
         <DefaultButton onButtonClick={handleAddDays}>
-          اضافة {resolveMethods2()}
+          اضافة {method2}
+        </DefaultButton>
+        <DefaultButton onButtonClick={handleAddExtra}>
+          اضافة مدخولات اضافية
         </DefaultButton>
         <DefaultButton onButtonClick={handleAddExpense}>
           تسجيل دفعة
         </DefaultButton>
+        <SafeButton onButtonClick={() => setReset(!reset)}>
+          التراجع عن جميع الحركات
+        </SafeButton>
         <DangerButton onButtonClick={handleSubmit}>تأكيد و حفظ</DangerButton>
       </div>
     </>

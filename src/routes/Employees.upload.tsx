@@ -57,7 +57,8 @@ const EmployeeUpload = () => {
         paymentAmount: salary,
         paymentUnits: Math.floor(balance / salary),
         //paymentUnits: 0,
-        balance: -(balance % salary),
+        extra: balance % salary,
+        balance: 0,
       };
 
       const response = await apiInstance.post("/api/employee", payload);
