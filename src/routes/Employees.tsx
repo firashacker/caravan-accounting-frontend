@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
 
+const paymentMethods = { dayly: "يومي", weekly: "اسبوعي", monthly: "شهري" };
+
 function Employees() {
   const { employeeList, status } = useSelector(
     (state: RootState) => state.employees,
@@ -55,6 +57,9 @@ function Employees() {
               <div className="min-w-full flex">
                 <FontAwesomeIcon className="text-red-600" icon={faUser} />
                 <p className="px-2">{employee.name}</p>
+                <p className="text-xs">
+                  [{paymentMethods[employee.paymentMethod]}]
+                </p>
               </div>
             </Link>
           ))}

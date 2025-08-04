@@ -2,14 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiInstance from "../../lib/axios";
 import type { PayloadAction } from "@reduxjs/toolkit";
 export interface EmployeeType {
-  id: number;
+  id?: number;
   name: string;
-  dayly: number;
-  weekly: number;
-  monthly: number;
-  days: number;
-  weeks: number;
-  months: number;
+  paymentMethod: "dayly" | "weekly" | "monthly";
+  paymentAmount: number;
+  paymentUnits: number;
+  balance: number;
 }
 
 export interface Employees {

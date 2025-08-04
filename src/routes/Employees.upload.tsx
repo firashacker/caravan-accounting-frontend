@@ -2,10 +2,12 @@ import { useState } from "react";
 import apiInstance from "../lib/axios";
 import FormInput from "../components/FormInput/FormInput.component";
 import DefaultButton from "../components/Button/Button.component";
-import { addEmployee } from "../state/Employees/Employees.slice";
+//import { addEmployee } from "../state/Employees/Employees.slice";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
+import { type EmployeeType } from "../state/Employees/Employees.slice";
+import { fetchEmployees } from "../state/Employees/Employees.slice";
 
 type PaymentMethod = {
   id: number;
@@ -49,28 +51,19 @@ const EmployeeUpload = () => {
     if (!confirm("متأكد؟")) return;
     setclicked(true);
     try {
-      let payload;
-      if (paymentMethod === "dayly") {
-        payload = {
-          name: name,
-          dayly: salary,
-          days: balance / salary,
-        };
-      } else if (paymentMethod === "weekly") {
-        payload = {
-          name: name,
-          weekly: salary,
-          weeks: balance / salary,
-        };
-      } else if (paymentMethod === "monthly") {
-        payload = {
-          name: name,
-          monthly: salary,
-          months: balance / salary,
-        };
-      }
+      const payload: EmployeeType = {
+        name: name,
+        paymentMethod: paymentMethod,
+        paymentAmount: salary,
+        paymentUnits: Math.floor(balance / salary),
+        //paymentUnits: 0,
+        balance: -(balance % salary),
+      };
+
       const response = await apiInstance.post("/api/employee", payload);
-      dispatch(addEmployee(response.data));
+      console.log(response);
+      dispatch(fetchEmployees());
+
       setTimeout(() => window.history.back(), 500);
     } catch (error) {
       alert(error);
@@ -104,7 +97,9 @@ const EmployeeUpload = () => {
         </label>
         <select
           onChange={(event) => {
-            setPaymentMethod(event.target.value);
+            setPaymentMethod(
+              event.target.value as "dayly" | "weekly" | "monthly",
+            );
             console.log(paymentMethod);
             //console.log(event.target.value);
           }}
