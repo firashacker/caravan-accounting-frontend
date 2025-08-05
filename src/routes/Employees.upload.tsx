@@ -8,6 +8,7 @@ import { type AppDispatch } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
 import { type EmployeeType } from "../state/Employees/Employees.slice";
 import { fetchEmployees } from "../state/Employees/Employees.slice";
+import { employeesEndPoint } from "../state/Employees/Employees.slice";
 
 type PaymentMethod = {
   id: number;
@@ -61,7 +62,7 @@ const EmployeeUpload = () => {
         balance: 0,
       };
 
-      const response = await apiInstance.post("/api/employee", payload);
+      const response = await apiInstance.post(employeesEndPoint, payload);
       console.log(response);
       dispatch(fetchEmployees());
 

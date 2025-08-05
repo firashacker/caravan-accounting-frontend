@@ -4,6 +4,15 @@ import Employees from "./routes/Employees";
 import Navbar from "./routes/NavBar";
 import EmployeeUpload from "./routes/Employees.upload";
 import Employee from "./routes/Employee";
+import Clients from "./routes/Clients";
+import ClientUpload from "./routes/Clients.upload";
+import Client from "./routes/Client";
+import Traders from "./routes/Traders";
+import TradersUpload from "./routes/Traders.upload";
+import Trader from "./routes/Trader";
+import Login from "./routes/Login";
+import Logout from "./routes/Logout";
+import ProtectedRoute from "./midlewares/PrivateRoute.middleware";
 
 function App() {
   return (
@@ -13,9 +22,84 @@ function App() {
         <div dir="rtl" className="pt-18  min-h-screen">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/employees" element={<Employees />} />
-            <Route path="/employees/new" element={<EmployeeUpload />} />
-            <Route path="/employee/:id" element={<Employee />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+
+            <Route
+              path="/employees"
+              element={
+                <ProtectedRoute>
+                  <Employees />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/employees/new"
+              element={
+                <ProtectedRoute>
+                  <EmployeeUpload />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/employees/:id"
+              element={
+                <ProtectedRoute>
+                  <Employee />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/clients"
+              element={
+                <ProtectedRoute>
+                  <Clients />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clients/new"
+              element={
+                <ProtectedRoute>
+                  <ClientUpload />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clients/:id"
+              element={
+                <ProtectedRoute>
+                  <Client />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/traders"
+              element={
+                <ProtectedRoute>
+                  <Traders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/traders/new"
+              element={
+                <ProtectedRoute>
+                  <TradersUpload />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/traders/:id"
+              element={
+                <ProtectedRoute>
+                  <Trader />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </BrowserRouter>

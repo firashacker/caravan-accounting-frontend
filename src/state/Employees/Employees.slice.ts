@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiInstance from "../../lib/axios";
 import type { PayloadAction } from "@reduxjs/toolkit";
+
+export const employeesEndPoint = "/api/employee";
+
 export interface EmployeeType {
   id?: number;
   name: string;
@@ -64,7 +67,7 @@ export const fetchEmployeesIfNeeded = createAsyncThunk(
   "employees/fetchEmployeesIfNeeded", // Action type prefix
   async (employeeList: EmployeeType[]) => {
     if (!(employeeList.length > 0)) {
-      const response = await apiInstance.get("/api/employee");
+      const response = await apiInstance.get(employeesEndPoint);
       return response.data;
     }
     return employeeList;
@@ -75,7 +78,7 @@ export const fetchEmployeesIfNeeded = createAsyncThunk(
 export const fetchEmployees = createAsyncThunk(
   "employees/fetchEmployees", // Action type prefix
   async () => {
-    const response = await apiInstance.get("/api/employee");
+    const response = await apiInstance.get(employeesEndPoint);
     return response.data;
   },
 );

@@ -128,7 +128,7 @@ function Employee() {
         <div className="flex pb-4 text-xl">
           <FontAwesomeIcon className="p-1" icon={faPerson} />
           <h1>{employee?.name}</h1>
-          <p className="px-2 text-sm">[عامل]</p>
+          <p className="px-2 text-sm">[ عامل ]</p>
         </div>
       </div>
       <table className="min-w-full border-s-slate-950 border-2">

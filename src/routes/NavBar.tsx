@@ -3,11 +3,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
   faHammer,
+  faCaravan,
+  faShop,
   //faBucket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import logo from "../assets/Caravan.svg";
+import { DefaultButtonStyle } from "../components/Button/Button.component";
+
 const mapNavElements = [
+  {
+    id: 4,
+    title: "التجار",
+    path: "/traders",
+    icon: faShop,
+  },
+  {
+    id: 3,
+    title: "العملاء",
+    path: "/clients",
+    icon: faCaravan,
+  },
   {
     id: 2,
     title: "العمال",
@@ -40,7 +56,7 @@ function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="invisible md:visible flex text-xl font-bold text-gray-800 hover:text-blue-500 transition-colors duration-200 pb-2"
+            className="\invisible \md:visible flex text-xl font-bold text-gray-800 hover:text-blue-500 transition-colors duration-200 pb-2"
           >
             <img className="max-h-15" src={logo} />
             <h1 className="flex flex-col min-h-full justify-center px-2">
@@ -57,7 +73,7 @@ function Navbar() {
                   className={` text-black py-2  px-4 rounded hover:opacity-90 transition duration-300  font-semibold
                   ${
                     pathname == navElement.path
-                      ? "bg-gradient-to-bl from-purple-300 to-blue-600" //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
+                      ? `${DefaultButtonStyle} shadow-xs` //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
                       : ""
                   }`}
                 >
@@ -106,7 +122,7 @@ function Navbar() {
             className={` flex py-3  border-gray-100 px-4 rounded hover:opacity-90 transition duration-300 font-semibold
           ${
             pathname === navElement.path
-              ? "bg-gradient-to-bl from-yellow-500 to-orange-600" //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
+              ? `${DefaultButtonStyle} shadow-xs` //"text-blue font-extrabold border-transparent border-b-blue-600 border-0 border-b-2"
               : ""
           }`}
           >
