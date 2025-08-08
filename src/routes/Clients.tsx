@@ -47,7 +47,7 @@ function Clients() {
             <Link
               key={client.id}
               className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-50 sm:min-w-50 p-4 shdow-2xl`}
-              to={`/clients/${client.id}`}
+              to={`/clients/${client.id}/${client.name}/statement`}
             >
               <div className="min-w-full flex">
                 <FontAwesomeIcon className="text-red-600" icon={faUser} />

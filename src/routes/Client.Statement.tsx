@@ -7,62 +7,62 @@ import DefaultButton, {
   SafeButton,
 } from "../components/Button/Button.component";
 import {
-  expensesEndPoint,
-  fetchExpenseSum,
-} from "../state/Expenses/Expenses.slice";
+  incomesEndPoint,
+  fetchIncomeSum,
+} from "../state/Incomes/Incomes.slice";
 import { useDispatch } from "react-redux";
-import { debtsEndPoint, fetchDebtSum } from "../state/Debts/Debts.slice";
-import { type ExpenseType } from "../state/Expenses/Expenses.slice";
-import { type DebtType } from "../state/Debts/Debts.slice";
+import { debitsEndPoint, fetchDebitSum } from "../state/Debits/Debits.slice";
 import apiInstance from "../lib/axios";
+import type { IncomeType } from "../state/Incomes/Incomes.slice";
+import type { DebitType } from "../state/Debits/Debits.slice";
 
-interface TraderStatementOptions {
+interface ClientStatementOptions {
   extraClasses?: string;
-  traderId: number;
+  clientId: number;
 }
-function TraderStatement({ traderId }: TraderStatementOptions) {
+function ClientStatement({ clientId }: ClientStatementOptions) {
   const [loading, setLoading] = useState(true);
-  const { expenseSum } = useSelector((state: RootState) => state.expense);
-  const { debtSum } = useSelector((state: RootState) => state.debt);
+  const { incomeSum } = useSelector((state: RootState) => state.income);
+  const { debitSum } = useSelector((state: RootState) => state.debit);
   const dispatch = useDispatch<AppDispatch>();
   const [refetch, setRefetch] = useState(false);
   const [overAll, setOverAll] = useState(0);
-  const [newExpenses, setNewExpenses] = useState<ExpenseType[]>([]);
-  const [newDebts, setNewDebts] = useState<DebtType[]>([]);
-  const [debts, setDebts] = useState(0);
-  const [expenses, setExpenses] = useState(0);
+  const [newIncomes, setNewIncomes] = useState<IncomeType[]>([]);
+  const [newDebits, setNewDebits] = useState<DebitType[]>([]);
+  const [debits, setDebits] = useState(0);
+  const [incomes, setIncomes] = useState(0);
 
-  const handleAddExpense = () => {
+  const handleAddIncome = () => {
     const amount = Number(prompt("مبلغ الدفعة ؟"));
     if (isNaN(amount)) return alert("المدخل ليس رقماً !");
-    const decription = prompt("الوصف ؟") || "دفعة تاجر";
-    const newExpense: ExpenseType = {
+    const decription = prompt("الوصف ؟") || "دفعة عميل";
+    const newIncome: IncomeType = {
       amount: amount,
       description: decription,
-      traderId: traderId,
+      clientId: clientId,
     };
-    setNewExpenses([...newExpenses, newExpense]);
-    setExpenses(expenses + amount);
+    setNewIncomes([...newIncomes, newIncome]);
+    setIncomes(incomes + amount);
   };
 
-  const handleAddDebt = () => {
+  const handleAddDebit = () => {
     const amount = Number(prompt("مبلغ الفاتورة ؟"));
     if (isNaN(amount)) return alert("المدخل ليس رقماً !");
-    const decription = prompt("الوصف ؟") || "فاتورة تاجر";
-    const newDebt: DebtType = {
+    const decription = prompt("الوصف ؟") || "فاتورة عميل";
+    const newDebit: DebitType = {
       amount: amount,
       description: decription,
-      traderId: traderId,
+      clientId: clientId,
     };
-    setNewDebts([...newDebts, newDebt]);
-    setDebts(debts + amount);
+    setNewDebits([...newDebits, newDebit]);
+    setDebits(debits + amount);
   };
 
   const handleSubmit = async () => {
-    if (newExpenses.length > 0) {
-      newExpenses.map(async (expense) => {
+    if (newIncomes.length > 0) {
+      newIncomes.map(async (expense) => {
         try {
-          const response = await apiInstance.post(expensesEndPoint, expense);
+          const response = await apiInstance.post(incomesEndPoint, expense);
           console.log(response);
         } catch (error) {
           console.log(error);
@@ -72,10 +72,10 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
         }
       });
     }
-    if (newDebts.length > 0) {
-      newDebts.map(async (debt) => {
+    if (newDebits.length > 0) {
+      newDebits.map(async (debt) => {
         try {
-          const response = await apiInstance.post(debtsEndPoint, debt);
+          const response = await apiInstance.post(debitsEndPoint, debt);
           console.log(response);
         } catch (error) {
           console.log(error);
@@ -89,20 +89,20 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
 
   useEffect(() => {
     setLoading(true);
-    dispatch(fetchExpenseSum({ section: "trader", id: String(traderId) }));
-    dispatch(fetchDebtSum({ section: "trader", id: String(traderId) }));
-    setDebts(0);
-    setExpenses(0);
-    setNewDebts([]);
-    setNewExpenses([]);
+    dispatch(fetchIncomeSum({ section: "client", id: String(clientId) }));
+    dispatch(fetchDebitSum({ section: "client", id: String(clientId) }));
+    setDebits(0);
+    setIncomes(0);
+    setNewDebits([]);
+    setNewIncomes([]);
     setLoading(false);
-  }, [traderId, refetch]);
+  }, [clientId, refetch]);
 
   useEffect(() => {
-    const allDebts = debtSum + debts;
-    const allExpenses = expenseSum + expenses;
+    const allDebts = debitSum + debits;
+    const allExpenses = incomeSum + incomes;
     setOverAll(allDebts - allExpenses);
-  }, [expenseSum, debtSum, debts, expenses]);
+  }, [incomeSum, debitSum, debits, incomes]);
 
   return (
     <>
@@ -119,13 +119,13 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
           <tr>
             <td className="border-s-slate-950 border-2 p-2">مجموع الفواتير</td>
             <td className="border-s-slate-950 border-2 p-2">
-              {debtSum + debts}
+              {debitSum + debits}
             </td>
           </tr>
           <tr>
             <td className="border-s-slate-950 border-2 p-2">مجموع الدفعات</td>
             <td className="border-s-slate-950 border-2 p-2">
-              {expenseSum + expenses}
+              {incomeSum + incomes}
             </td>
           </tr>
           <tr>
@@ -133,17 +133,17 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
             <td className="border-s-slate-950 border-2 p-2">
               <div className="flex space-x-4">
                 <p> ₪ {Math.abs(overAll)}</p>
-                <p className="text-red-500">{overAll >= 0 ? "له" : "عليه"}</p>
+                <p className="text-red-500">{overAll <= 0 ? "له" : "عليه"}</p>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
       <div className="p-8 space-x-2">
-        <DefaultButton onButtonClick={handleAddExpense}>
+        <DefaultButton onButtonClick={handleAddIncome}>
           تسجيل دفعة
         </DefaultButton>
-        <DefaultButton onButtonClick={handleAddDebt}>
+        <DefaultButton onButtonClick={handleAddDebit}>
           تسجيل فاتورة
         </DefaultButton>
         <SafeButton onButtonClick={() => setRefetch(!refetch)}>
@@ -155,4 +155,4 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
   );
 }
 
-export default TraderStatement;
+export default ClientStatement;

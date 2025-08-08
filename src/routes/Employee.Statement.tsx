@@ -112,7 +112,7 @@ function EmployeeStatement({
         //    Math.floor(Number(amount) / employee.paymentAmount),
         //),
         balance: employee.balance + Number(amount),
-      }); //Fix Please
+      });
     }
   };
 

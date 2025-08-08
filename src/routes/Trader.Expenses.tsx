@@ -40,6 +40,7 @@ const TraderExpenses = ({ traderId, extraClasses }: TraderExpensesOptions) => {
           <tr className="bg-blue-200">
             <td className="p-4 ">الوقت</td>
             <td className="p-4">المبلغ</td>
+            <td className="p-4">الوصف</td>
           </tr>
         </thead>
         <tbody>
@@ -51,6 +52,9 @@ const TraderExpenses = ({ traderId, extraClasses }: TraderExpensesOptions) => {
                 </td>
                 <td className="border-s-slate-950 border-2 p-2">
                   {expense.amount}
+                </td>
+                <td className="border-s-slate-950 border-2 p-2">
+                  {expense.description}
                 </td>
               </tr>
             ))}

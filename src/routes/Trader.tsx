@@ -24,7 +24,7 @@ function Trader() {
           <NavButtons traderId={traderId} traderName={traderName} page={page} />
         </div>
       </div>
-      <div className="pt-45">
+      <div className="pt-50">
         <NavPage traderId={traderId} page={page} />
       </div>
     </>
@@ -69,21 +69,16 @@ const NavButtons = ({
   traderName: string | undefined;
   page: string | undefined;
 }) => {
+  const endPoint = `/traders/${traderId}/${traderName}`;
   switch (page) {
     case "statement":
       {
         return (
           <div>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/traders/${traderId}/${traderName}/expenses`}
-            >
+            <Link className={DefaultButtonStyle} to={`${endPoint}/expenses`}>
               عرض الدفع
             </Link>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/traders/${traderId}/${traderName}/debts`}
-            >
+            <Link className={DefaultButtonStyle} to={`${endPoint}/debts`}>
               عرض الفواتير
             </Link>
           </div>
@@ -94,16 +89,10 @@ const NavButtons = ({
       {
         return (
           <div>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/traders/${traderId}/${traderName}/statement`}
-            >
-              عرض كشف الحساب
+            <Link className={DefaultButtonStyle} to={`${endPoint}/statement`}>
+              كشف الحساب
             </Link>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/traders/${traderId}/${traderName}/debts`}
-            >
+            <Link className={DefaultButtonStyle} to={`${endPoint}/debts`}>
               عرض الفواتير
             </Link>
           </div>
@@ -114,16 +103,10 @@ const NavButtons = ({
       {
         return (
           <div>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/traders/${traderId}/${traderName}/statement`}
-            >
-              عرض كشف الحساب
+            <Link className={DefaultButtonStyle} to={`${endPoint}/statement`}>
+              كشف الحساب
             </Link>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/traders/${traderId}/${traderName}/expenses`}
-            >
+            <Link className={DefaultButtonStyle} to={`${endPoint}/expenses`}>
               عرض الدفع
             </Link>
           </div>

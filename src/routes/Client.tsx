@@ -1,69 +1,119 @@
-import { useSelector } from "react-redux";
-import { type RootState } from "../state/store";
-import Spinner from "../components/Spinner/Spinner.component";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { type ClientType } from "../state/Clients/Clients.slice";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson } from "@fortawesome/free-solid-svg-icons";
-import DefaultButton, {
-  DangerButton,
-  SafeButton,
-} from "../components/Button/Button.component";
-//import { useDispatch } from "react-redux";
-//import { type AppDispatch } from "../state/store";
-//import { fetchClients } from "../state/Clients/Clients.slice";
-//import apiInstance from "../lib/axios";
-//import { clientsEndPoint } from "../state/Clients/Clients.slice";
+import { DefaultButtonStyle } from "../components/Button/Button.component";
+import ClientDebits from "./Client.Debits";
+import ClientIncomes from "./Client.Incomes";
+import ClientStatement from "./Client.Statement";
 
 function Client() {
-  const { clientList, status } = useSelector(
-    (state: RootState) => state.clients,
-  );
-  //const dispatch = useDispatch<AppDispatch>();
-  const clientId = useParams().id;
-  const [client, setClient] = useState<ClientType>();
-  const [reset, setReset] = useState(false);
-
-  useEffect(() => {
-    const result = clientList.find((e) => e.id === Number(clientId));
-    setClient(result);
-  }, [clientId, reset]);
+  const clientId = Number(useParams().id);
+  const clientName = useParams().name;
+  const page = useParams().page;
 
   return (
     <>
-      {status === "loading" && <Spinner />}
-
-      <div className=" p-8 flex flex-col  space-x-4">
+      <div className=" p-8 flex flex-col  space-x-4 fixed bg-blue-100 min-w-full border-b-2 border-black">
         <div className="flex pb-4 text-xl">
           <FontAwesomeIcon className="p-1" icon={faPerson} />
-          <h1>{client?.name}</h1>
+          <h1>{clientName}</h1>
           <p className="px-2 text-sm">[ عميل ]</p>
         </div>
+        <div className="pt-4">
+          <NavButtons clientId={clientId} clientName={clientName} page={page} />
+        </div>
       </div>
-      <table className="min-w-full border-s-slate-950 border-2">
-        <thead>
-          <tr className="bg-blue-200">
-            <td className="p-4 ">المعرف</td>
-            <td className="p-4">القيمة</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border-s-slate-950 border-2 p-2">الية الحساب</td>
-            <td className="border-s-slate-950 border-2 p-2">اي شيء</td>
-          </tr>
-        </tbody>
-      </table>
-      <div className="p-8 space-x-2">
-        <DefaultButton>تسجيل دفعة</DefaultButton>
-        <SafeButton onButtonClick={() => setReset(!reset)}>
-          التراجع عن جميع الحركات
-        </SafeButton>
-        <DangerButton>تأكيد و حفظ</DangerButton>
+      <div className="pt-50">
+        <NavPage clientId={clientId} page={page} />
       </div>
     </>
   );
 }
+
+const NavPage = ({
+  clientId,
+  page,
+}: {
+  clientId: number;
+  page: string | undefined;
+}) => {
+  switch (page) {
+    case "statement":
+      {
+        return <ClientStatement clientId={clientId} />;
+      }
+      break;
+    case "incomes":
+      {
+        return <ClientIncomes clientId={clientId} />;
+      }
+      break;
+    case "debits":
+      {
+        return <ClientDebits clientId={clientId} />;
+      }
+      break;
+    default:
+      return <></>;
+      break;
+  }
+};
+
+const NavButtons = ({
+  clientId,
+  page,
+  clientName,
+}: {
+  clientId: number;
+  clientName: string | undefined;
+  page: string | undefined;
+}) => {
+  const endPoint = `/clients/${clientId}/${clientName}`;
+  switch (page) {
+    case "statement":
+      {
+        return (
+          <div>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/incomes`}>
+              عرض الدفع
+            </Link>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/debits`}>
+              عرض الفواتير
+            </Link>
+          </div>
+        );
+      }
+      break;
+    case "incomes":
+      {
+        return (
+          <div>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/statement`}>
+              كشف الحساب
+            </Link>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/debits`}>
+              عرض الفواتير
+            </Link>
+          </div>
+        );
+      }
+      break;
+    case "debits":
+      {
+        return (
+          <div>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/statement`}>
+              كشف الحساب
+            </Link>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/incomes`}>
+              عرض الدفع
+            </Link>
+          </div>
+        );
+      }
+      break;
+  }
+};
 
 export default Client;

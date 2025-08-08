@@ -1,28 +1,27 @@
 import { useSelector, useDispatch } from "react-redux";
 import { type AppDispatch, type RootState } from "../state/store";
 //import { fetchEmployeeExpenseSum } from "../state/Expenses/Expenses.slice";
-
-import { fetchDebts } from "../state/Debts/Debts.slice";
+import { fetchDebits } from "../state/Debits/Debits.slice";
 import { useEffect, useState } from "react";
 import Spinner from "../components/Spinner/Spinner.component";
 import DefaultButton from "../components/Button/Button.component";
 
-interface TraderDebtsOptions {
+interface ClientDebitsOptions {
   extraClasses?: string;
-  traderId: number;
+  clientId: number;
 }
-const TraderDebts = ({ traderId, extraClasses }: TraderDebtsOptions) => {
+const ClientDebits = ({ clientId, extraClasses }: ClientDebitsOptions) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { debtList, status } = useSelector((state: RootState) => state.debt);
+  const { debitList, status } = useSelector((state: RootState) => state.debit);
 
   const [newPage, setNewpage] = useState(0);
 
   useEffect(() => {
     dispatch(
-      fetchDebts({
-        from: debtList.length,
-        section: "trader",
-        id: String(traderId),
+      fetchDebits({
+        from: debitList.length,
+        section: "client",
+        id: String(clientId),
       }),
     );
   }, [newPage]);
@@ -42,25 +41,25 @@ const TraderDebts = ({ traderId, extraClasses }: TraderDebtsOptions) => {
           </tr>
         </thead>
         <tbody>
-          {debtList &&
-            debtList.map((debt) => (
-              <tr key={debt.id}>
+          {debitList &&
+            debitList.map((debit) => (
+              <tr key={debit.id}>
                 <td className="border-s-slate-950 border-2 p-2">
-                  {debt.createdAt?.split("T")[0]}
+                  {debit.createdAt?.split("T")[0]}
                 </td>
                 <td className="border-s-slate-950 border-2 p-2">
-                  {debt.amount}
+                  {debit.amount}
                 </td>
                 <td className="border-s-slate-950 border-2 p-2">
-                  {debt.description}
+                  {debit.description}
                 </td>
               </tr>
             ))}
         </tbody>
       </table>
       <div className="p-8 space-x-2">
-        {debtList.length > newPage && (
-          <DefaultButton onButtonClick={() => setNewpage(debtList.length)}>
+        {debitList.length > newPage && (
+          <DefaultButton onButtonClick={() => setNewpage(debitList.length)}>
             تحميل المزيد
           </DefaultButton>
         )}
@@ -69,4 +68,4 @@ const TraderDebts = ({ traderId, extraClasses }: TraderDebtsOptions) => {
   );
 };
 
-export default TraderDebts;
+export default ClientDebits;

@@ -68,7 +68,7 @@ function App() {
               }
             />
             <Route
-              path="/clients/:id"
+              path="/clients/:id/:name/:page"
               element={
                 <ProtectedRoute>
                   <Client />

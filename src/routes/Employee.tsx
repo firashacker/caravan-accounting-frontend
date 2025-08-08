@@ -27,7 +27,7 @@ function Employee() {
           />
         </div>
       </div>
-      <div className="pt-45">
+      <div className="pt-50">
         <NavPage employeeId={employeeId} page={page} />
       </div>
     </>
@@ -67,15 +67,13 @@ const NavButtons = ({
   employeeName: string | undefined;
   page: string | undefined;
 }) => {
+  const endPoint = `/employees/${employeeId}/${employeeName}`;
   switch (page) {
     case "statement":
       {
         return (
           <div>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/employees/${employeeId}/${employeeName}/expenses`}
-            >
+            <Link className={DefaultButtonStyle} to={`${endPoint}/expenses`}>
               عرض الدفع
             </Link>
           </div>
@@ -86,11 +84,8 @@ const NavButtons = ({
       {
         return (
           <div>
-            <Link
-              className={DefaultButtonStyle}
-              to={`/employees/${employeeId}/${employeeName}/statement`}
-            >
-              عرض كشف الحساب
+            <Link className={DefaultButtonStyle} to={`${endPoint}/statement`}>
+              كشف الحساب
             </Link>
           </div>
         );
