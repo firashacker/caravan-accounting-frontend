@@ -3,9 +3,7 @@ import { type RootState } from "../state/store";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaravan, faUser } from "@fortawesome/free-solid-svg-icons";
-import DefaultButton, {
-  DefaultButtonStyle,
-} from "../components/Button/Button.component";
+import { DefaultButtonStyle } from "../components/Button/Button.component";
 import { faAdd } from "@fortawesome/free-solid-svg-icons/faAdd";
 import { useEffect } from "react";
 import { fetchClientsIfNeeded } from "../state/Clients/Clients.slice";
@@ -34,14 +32,12 @@ function Clients() {
           <FontAwesomeIcon icon={faCaravan} />
         </div>
         <div>
-          <Link to="/clients/new">
-            <DefaultButton
-              extraClasses="flex"
-              onButtonClick={() => console.log("Fuck")}
-            >
-              <FontAwesomeIcon className="p-1" icon={faAdd} />
-              <p>اضافة زبون</p>
-            </DefaultButton>
+          <Link
+            className={`${DefaultButtonStyle} flex w-fit`}
+            to="/clients/new"
+          >
+            <FontAwesomeIcon className="p-1" icon={faAdd} />
+            <p>اضافة عميل</p>
           </Link>
         </div>
       </div>

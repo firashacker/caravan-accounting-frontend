@@ -43,7 +43,7 @@ function App() {
               }
             />
             <Route
-              path="/employees/:id"
+              path="/employees/:id/:name/:page"
               element={
                 <ProtectedRoute>
                   <Employee />
@@ -93,7 +93,7 @@ function App() {
               }
             />
             <Route
-              path="/traders/:id"
+              path="/traders/:id/:name/:page"
               element={
                 <ProtectedRoute>
                   <Trader />

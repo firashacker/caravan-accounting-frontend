@@ -1,69 +1,136 @@
-import { useSelector } from "react-redux";
-import { type RootState } from "../state/store";
-import Spinner from "../components/Spinner/Spinner.component";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { type TraderType } from "../state/Traders/Traders.slice";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson } from "@fortawesome/free-solid-svg-icons";
-import DefaultButton, {
-  DangerButton,
-  SafeButton,
-} from "../components/Button/Button.component";
-//import { useDispatch } from "react-redux";
-//import { type AppDispatch } from "../state/store";
-//import { fetchTraders } from "../state/Traders/Traders.slice";
-//import apiInstance from "../lib/axios";
-//import { tradersEndPoint } from "../state/Traders/Traders.slice";
+import { DefaultButtonStyle } from "../components/Button/Button.component";
+import TraderStatement from "./Trader.Statement";
+import TraderExpenses from "./Trader.Expenses";
+import TraderDebts from "./Trader.Debts";
 
 function Trader() {
-  const { traderList, status } = useSelector(
-    (state: RootState) => state.traders,
-  );
-  //const dispatch = useDispatch<AppDispatch>();
-  const traderId = useParams().id;
-  const [trader, setTrader] = useState<TraderType>();
-  const [reset, setReset] = useState(false);
-
-  useEffect(() => {
-    const result = traderList.find((e) => e.id === Number(traderId));
-    setTrader(result);
-  }, [traderId, reset]);
+  const traderId = Number(useParams().id);
+  const traderName = useParams().name;
+  const page = useParams().page;
 
   return (
     <>
-      {status === "loading" && <Spinner />}
-
-      <div className=" p-8 flex flex-col  space-x-4">
+      <div className=" p-8 flex flex-col  space-x-4 fixed bg-blue-100 min-w-full border-b-2 border-black">
         <div className="flex pb-4 text-xl">
           <FontAwesomeIcon className="p-1" icon={faPerson} />
-          <h1>{trader?.name}</h1>
+          <h1>{traderName}</h1>
           <p className="px-2 text-sm">[ تاجر ]</p>
         </div>
+        <div className="pt-4">
+          <NavButtons traderId={traderId} traderName={traderName} page={page} />
+        </div>
       </div>
-      <table className="min-w-full border-s-slate-950 border-2">
-        <thead>
-          <tr className="bg-blue-200">
-            <td className="p-4 ">المعرف</td>
-            <td className="p-4">القيمة</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border-s-slate-950 border-2 p-2">الية الحساب</td>
-            <td className="border-s-slate-950 border-2 p-2">اي شيء</td>
-          </tr>
-        </tbody>
-      </table>
-      <div className="p-8 space-x-2">
-        <DefaultButton>تسجيل دفعة</DefaultButton>
-        <SafeButton onButtonClick={() => setReset(!reset)}>
-          التراجع عن جميع الحركات
-        </SafeButton>
-        <DangerButton>تأكيد و حفظ</DangerButton>
+      <div className="pt-45">
+        <NavPage traderId={traderId} page={page} />
       </div>
     </>
   );
 }
+
+const NavPage = ({
+  traderId,
+  page,
+}: {
+  traderId: number;
+  page: string | undefined;
+}) => {
+  switch (page) {
+    case "statement":
+      {
+        return <TraderStatement traderId={traderId} />;
+      }
+      break;
+    case "expenses":
+      {
+        return <TraderExpenses traderId={traderId} />;
+      }
+      break;
+    case "debts":
+      {
+        return <TraderDebts traderId={traderId} />;
+      }
+      break;
+    default:
+      return <></>;
+      break;
+  }
+};
+
+const NavButtons = ({
+  traderId,
+  page,
+  traderName,
+}: {
+  traderId: number;
+  traderName: string | undefined;
+  page: string | undefined;
+}) => {
+  switch (page) {
+    case "statement":
+      {
+        return (
+          <div>
+            <Link
+              className={DefaultButtonStyle}
+              to={`/traders/${traderId}/${traderName}/expenses`}
+            >
+              عرض الدفع
+            </Link>
+            <Link
+              className={DefaultButtonStyle}
+              to={`/traders/${traderId}/${traderName}/debts`}
+            >
+              عرض الفواتير
+            </Link>
+          </div>
+        );
+      }
+      break;
+    case "expenses":
+      {
+        return (
+          <div>
+            <Link
+              className={DefaultButtonStyle}
+              to={`/traders/${traderId}/${traderName}/statement`}
+            >
+              عرض كشف الحساب
+            </Link>
+            <Link
+              className={DefaultButtonStyle}
+              to={`/traders/${traderId}/${traderName}/debts`}
+            >
+              عرض الفواتير
+            </Link>
+          </div>
+        );
+      }
+      break;
+    case "debts":
+      {
+        return (
+          <div>
+            <Link
+              className={DefaultButtonStyle}
+              to={`/traders/${traderId}/${traderName}/statement`}
+            >
+              عرض كشف الحساب
+            </Link>
+            <Link
+              className={DefaultButtonStyle}
+              to={`/traders/${traderId}/${traderName}/expenses`}
+            >
+              عرض الدفع
+            </Link>
+          </div>
+        );
+      }
+      break;
+  }
+};
 
 export default Trader;

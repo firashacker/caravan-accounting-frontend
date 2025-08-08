@@ -3,9 +3,7 @@ import { type RootState } from "../state/store";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShop, faUser } from "@fortawesome/free-solid-svg-icons";
-import DefaultButton, {
-  DefaultButtonStyle,
-} from "../components/Button/Button.component";
+import { DefaultButtonStyle } from "../components/Button/Button.component";
 import { faAdd } from "@fortawesome/free-solid-svg-icons/faAdd";
 import { useEffect } from "react";
 import { fetchTradersIfNeeded } from "../state/Traders/Traders.slice";
@@ -34,14 +32,12 @@ function Traders() {
           <FontAwesomeIcon icon={faShop} />
         </div>
         <div>
-          <Link to="/traders/new">
-            <DefaultButton
-              extraClasses="flex"
-              onButtonClick={() => console.log("Fuck")}
-            >
-              <FontAwesomeIcon className="p-1" icon={faAdd} />
-              <p>اضافة تاجر</p>
-            </DefaultButton>
+          <Link
+            className={`${DefaultButtonStyle} flex w-fit`}
+            to="/traders/new"
+          >
+            <FontAwesomeIcon className="p-1" icon={faAdd} />
+            <p>اضافة تاجر</p>
           </Link>
         </div>
       </div>
@@ -51,7 +47,7 @@ function Traders() {
             <Link
               key={trader.id}
               className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-50 sm:min-w-50 p-4 shdow-2xl`}
-              to={`/traders/${trader.id}`}
+              to={`/traders/${trader.id}/${trader.name}/statement`}
             >
               <div className="min-w-full flex">
                 <FontAwesomeIcon className="text-red-600" icon={faUser} />

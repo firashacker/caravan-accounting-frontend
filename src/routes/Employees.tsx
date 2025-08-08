@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHammer } from "@fortawesome/free-solid-svg-icons/faHammer";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import DefaultButton, {
-  DefaultButtonStyle,
-} from "../components/Button/Button.component";
+import { DefaultButtonStyle } from "../components/Button/Button.component";
 import { faAdd } from "@fortawesome/free-solid-svg-icons/faAdd";
 import { useEffect } from "react";
 import { fetchEmployeesIfNeeded } from "../state/Employees/Employees.slice";
@@ -35,14 +33,12 @@ function Employees() {
           <FontAwesomeIcon icon={faHammer} />
         </div>
         <div>
-          <Link to="/employees/new">
-            <DefaultButton
-              extraClasses="flex"
-              onButtonClick={() => console.log("Fuck")}
-            >
-              <FontAwesomeIcon className="p-1" icon={faAdd} />
-              <p>اضافة عامل</p>
-            </DefaultButton>
+          <Link
+            className={`${DefaultButtonStyle} flex w-fit`}
+            to="/employees/new"
+          >
+            <FontAwesomeIcon className="p-1" icon={faAdd} />
+            <p>اضافة عامل</p>
           </Link>
         </div>
       </div>
@@ -51,12 +47,12 @@ function Employees() {
           employeeList.map((employee) => (
             <Link
               key={employee.id}
-              className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-50 sm:min-w-50 p-4 shdow-2xl`}
-              to={`/employees/${employee.id}`}
+              className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-fit min-w-60 p-4 shdow-2xl`}
+              to={`/employees/${employee.id}/${employee.name}/statement`}
             >
               <div className="min-w-full flex">
                 <FontAwesomeIcon className="text-red-600" icon={faUser} />
-                <p className="px-2">{employee.name}</p>
+                <p className="px-2 text-wrap break-words">{employee.name}</p>
                 <p className="text-xs">
                   [{paymentMethods[employee.paymentMethod]}]
                 </p>
