@@ -85,6 +85,7 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
         }
       });
     }
+    setRefetch(!refetch);
   };
 
   useEffect(() => {

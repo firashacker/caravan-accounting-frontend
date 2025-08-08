@@ -85,6 +85,7 @@ function ClientStatement({ clientId }: ClientStatementOptions) {
         }
       });
     }
+    setRefetch(!refetch);
   };
 
   useEffect(() => {

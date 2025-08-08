@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const BaseUrl = import.meta.env.VITE_API_URL;
-//export const BaseUrl = `http://${window.location.host}`;
+//export const BaseUrl = import.meta.env.VITE_API_URL;
+export const BaseUrl = `http://${window.location.host}`;
 //export const BaseUrl = "http://192.168.1.102:4000";
 
 export const uploadInstance = axios.create({
