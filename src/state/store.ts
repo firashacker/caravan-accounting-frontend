@@ -9,6 +9,7 @@ import expenseSlice from "./Expenses/Expenses.slice";
 import debtSlice from "./Debts/Debts.slice";
 import debitSlice from "./Debits/Debits.slice";
 import incomeSlice from "./Incomes/Incomes.slice";
+import investorSlice from "./Investors/Investors.slice";
 
 //Redux Persist Configuration
 const persistConfig = {
@@ -24,6 +25,7 @@ export const store = configureStore({
     employees: employeeReducer,
     clients: clientsReducer,
     traders: tradersReducer,
+    investors: investorSlice,
     auth: persistedAuthReducer,
     expense: expenseSlice,
     debt: debtSlice,

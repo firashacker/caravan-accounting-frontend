@@ -7,9 +7,9 @@ export interface ExpenseType {
   createdAt?: string;
   amount: number;
   description: string;
-  employees?: boolean;
   traderId?: number;
   employeeId?: number;
+  investorId?: number;
 }
 
 export const expensesEndPoint = "/api/expense";
@@ -33,7 +33,11 @@ const InitialState: Expenses = {
 const expenseSlice = createSlice({
   name: "expenses",
   initialState: InitialState,
-  reducers: {},
+  reducers: {
+    appendExpense: (state, action: PayloadAction<ExpenseType>) => {
+      state.expenseList = [action.payload, ...state.expenseList];
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -151,5 +155,5 @@ export const fetchExpenses = createAsyncThunk(
   },
 );
 
-//export const {  } = expenseSlice.actions;
+export const { appendExpense } = expenseSlice.actions;
 export default expenseSlice.reducer;

@@ -31,7 +31,11 @@ const InitialState: Debts = {
 const debtSlice = createSlice({
   name: "debts",
   initialState: InitialState,
-  reducers: {},
+  reducers: {
+    appendDebt: (state, action: PayloadAction<DebtType>) => {
+      state.debtList = [action.payload, ...state.debtList];
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -146,4 +150,5 @@ export const fetchDebts = createAsyncThunk(
   },
 );
 
+export const { appendDebt } = debtSlice.actions;
 export default debtSlice.reducer;

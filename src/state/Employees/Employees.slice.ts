@@ -65,12 +65,16 @@ const employeeSlice = createSlice({
 // Define the async thunk for fetching data
 export const fetchEmployeesIfNeeded = createAsyncThunk(
   "employees/fetchEmployeesIfNeeded", // Action type prefix
-  async (employeeList: EmployeeType[]) => {
-    if (!(employeeList.length > 0)) {
+  async (anything = undefined, { getState }) => {
+    console.log(anything);
+    //@ts-expect-error @ts-ignore
+    const listLength = getState().employees.employeeList.length;
+    if (!(listLength > 0)) {
       const response = await apiInstance.get(employeesEndPoint);
       return response.data;
     }
-    return employeeList;
+    //@ts-expect-error @ts-ignore
+    return getState().employees.employeeList;
   },
 );
 

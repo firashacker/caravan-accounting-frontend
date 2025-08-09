@@ -7,60 +7,38 @@ import DefaultButton, {
   SafeButton,
 } from "../components/Button/Button.component";
 import {
-  appendExpense,
   expensesEndPoint,
   fetchExpenseSum,
+  appendExpense,
 } from "../state/Expenses/Expenses.slice";
 import { useDispatch } from "react-redux";
-import {
-  appendDebt,
-  debtsEndPoint,
-  fetchDebtSum,
-} from "../state/Debts/Debts.slice";
 import { type ExpenseType } from "../state/Expenses/Expenses.slice";
-import { type DebtType } from "../state/Debts/Debts.slice";
 import apiInstance from "../lib/axios";
 
-interface TraderStatementOptions {
+interface InvestorStatementOptions {
   extraClasses?: string;
-  traderId: number;
+  investorId: number;
 }
-function TraderStatement({ traderId }: TraderStatementOptions) {
+function InvestorStatement({ investorId }: InvestorStatementOptions) {
   const [loading, setLoading] = useState(true);
   const { expenseSum } = useSelector((state: RootState) => state.expense);
-  const { debtSum } = useSelector((state: RootState) => state.debt);
   const dispatch = useDispatch<AppDispatch>();
   const [refetch, setRefetch] = useState(false);
   const [overAll, setOverAll] = useState(0);
   const [newExpenses, setNewExpenses] = useState<ExpenseType[]>([]);
-  const [newDebts, setNewDebts] = useState<DebtType[]>([]);
-  const [debts, setDebts] = useState(0);
   const [expenses, setExpenses] = useState(0);
 
   const handleAddExpense = () => {
-    const amount = Number(prompt("مبلغ الدفعة ؟"));
+    const amount = Number(prompt("مبلغ المسحوبات ؟"));
     if (isNaN(amount)) return alert("المدخل ليس رقماً !");
-    const decription = prompt("الوصف ؟") || "دفعة تاجر";
+    const decription = prompt("الوصف ؟") || "مسحوبات مستثمرين";
     const newExpense: ExpenseType = {
       amount: amount,
       description: decription,
-      traderId: traderId,
+      investorId: investorId,
     };
     setNewExpenses([...newExpenses, newExpense]);
     setExpenses(expenses + amount);
-  };
-
-  const handleAddDebt = () => {
-    const amount = Number(prompt("مبلغ الفاتورة ؟"));
-    if (isNaN(amount)) return alert("المدخل ليس رقماً !");
-    const decription = prompt("الوصف ؟") || "فاتورة تاجر";
-    const newDebt: DebtType = {
-      amount: amount,
-      description: decription,
-      traderId: traderId,
-    };
-    setNewDebts([...newDebts, newDebt]);
-    setDebts(debts + amount);
   };
 
   const handleSubmit = async () => {
@@ -77,38 +55,21 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
         }
       });
     }
-    if (newDebts.length > 0) {
-      newDebts.map(async (debt) => {
-        try {
-          const response = await apiInstance.post(debtsEndPoint, debt);
-          dispatch(appendDebt(response.data));
-        } catch (error) {
-          console.log(error);
-          alert(
-            "حدث خطأ اثناء تسجيل الفواتير الرجاء التأكد من صحة الحسابات واعادة العمليات المطلوبة",
-          );
-        }
-      });
-    }
     setRefetch(!refetch);
   };
 
   useEffect(() => {
     setLoading(true);
-    dispatch(fetchExpenseSum({ section: "trader", id: String(traderId) }));
-    dispatch(fetchDebtSum({ section: "trader", id: String(traderId) }));
-    setDebts(0);
+    dispatch(fetchExpenseSum({ section: "investor", id: String(investorId) }));
     setExpenses(0);
-    setNewDebts([]);
     setNewExpenses([]);
     setLoading(false);
-  }, [traderId, refetch]);
+  }, [investorId, refetch]);
 
   useEffect(() => {
-    const allDebts = debtSum + debts;
     const allExpenses = expenseSum + expenses;
-    setOverAll(allDebts - allExpenses);
-  }, [expenseSum, debtSum, debts, expenses]);
+    setOverAll(allExpenses);
+  }, [expenseSum, expenses]);
 
   return (
     <>
@@ -123,13 +84,7 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
         </thead>
         <tbody>
           <tr>
-            <td className="border-s-slate-950 border-2 p-2">مجموع الفواتير</td>
-            <td className="border-s-slate-950 border-2 p-2">
-              {debtSum + debts}
-            </td>
-          </tr>
-          <tr>
-            <td className="border-s-slate-950 border-2 p-2">مجموع الدفعات</td>
+            <td className="border-s-slate-950 border-2 p-2">مجموع المصاريف</td>
             <td className="border-s-slate-950 border-2 p-2">
               {expenseSum + expenses}
             </td>
@@ -147,10 +102,7 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
       </table>
       <div className="p-8 space-x-2">
         <DefaultButton onButtonClick={handleAddExpense}>
-          تسجيل دفعة
-        </DefaultButton>
-        <DefaultButton onButtonClick={handleAddDebt}>
-          تسجيل فاتورة
+          تسجيل مصاريف
         </DefaultButton>
         <SafeButton onButtonClick={() => setRefetch(!refetch)}>
           التراجع عن جميع الحركات
@@ -161,4 +113,4 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
   );
 }
 
-export default TraderStatement;
+export default InvestorStatement;

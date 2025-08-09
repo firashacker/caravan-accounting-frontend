@@ -12,6 +12,9 @@ import TradersUpload from "./routes/Traders.upload";
 import Trader from "./routes/Trader";
 import Login from "./routes/Login";
 import Logout from "./routes/Logout";
+import Investors from "./routes/Investors";
+import Investor from "./routes/Investor";
+import InvestorsUpload from "./routes/Investors.upload";
 import ProtectedRoute from "./midlewares/PrivateRoute.middleware";
 
 function App() {
@@ -97,6 +100,31 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Trader />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/investors"
+              element={
+                <ProtectedRoute>
+                  <Investors />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/investors/new"
+              element={
+                <ProtectedRoute>
+                  <InvestorsUpload />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/investors/:id/:name/:page"
+              element={
+                <ProtectedRoute>
+                  <Investor />
                 </ProtectedRoute>
               }
             />

@@ -59,12 +59,16 @@ const traderSlice = createSlice({
 // Define the async thunk for fetching data
 export const fetchTradersIfNeeded = createAsyncThunk(
   "traders/fetchTradersIfNeeded", // Action type prefix
-  async (tradersList: TraderType[]) => {
-    if (!(tradersList.length > 0)) {
+  async (anything = undefined, { getState }) => {
+    console.log(anything);
+    //@ts-expect-error @ts-ignore
+    const listLength = getState().traders.traderList.length;
+    if (!(listLength > 0)) {
       const response = await apiInstance.get(tradersEndPoint);
       return response.data;
     }
-    return tradersList;
+    //@ts-expect-error @ts-ignore
+    return getState().traders.traderList;
   },
 );
 

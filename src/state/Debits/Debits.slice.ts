@@ -31,7 +31,11 @@ const InitialState: Debits = {
 const debitSlice = createSlice({
   name: "debits",
   initialState: InitialState,
-  reducers: {},
+  reducers: {
+    appendDebit: (state, action: PayloadAction<DebitType>) => {
+      state.debitList = [action.payload, ...state.debitList];
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -146,4 +150,5 @@ export const fetchDebits = createAsyncThunk(
   },
 );
 
+export const { appendDebit } = debitSlice.actions;
 export default debitSlice.reducer;

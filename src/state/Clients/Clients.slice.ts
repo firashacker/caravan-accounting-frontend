@@ -59,12 +59,16 @@ const clientSlice = createSlice({
 // Define the async thunk for fetching data
 export const fetchClientsIfNeeded = createAsyncThunk(
   "clients/fetchClientsIfNeeded", // Action type prefix
-  async (clientsList: ClientType[]) => {
-    if (!(clientsList.length > 0)) {
+  async (anything = undefined, { getState }) => {
+    console.log(anything);
+    //@ts-expect-error @ts-ignore
+    const clientListLength = getState().clients.clientList.length;
+    if (!(clientListLength > 0)) {
       const response = await apiInstance.get(clientsEndPoint);
       return response.data;
     }
-    return clientsList;
+    //@ts-expect-error @ts-ignore
+    return getState().clients.clientList;
   },
 );
 

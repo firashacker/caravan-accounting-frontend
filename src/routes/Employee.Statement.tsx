@@ -8,6 +8,7 @@ import {
   type EmployeeType,
 } from "../state/Employees/Employees.slice";
 import {
+  appendExpense,
   expensesEndPoint,
   type ExpenseType,
 } from "../state/Expenses/Expenses.slice";
@@ -95,7 +96,6 @@ function EmployeeStatement({
       setExpense({
         amount: Number(amount),
         description: "دفعة عمال",
-        employees: true,
         employeeId: employee?.id,
       });
     } else {
@@ -120,7 +120,7 @@ function EmployeeStatement({
     try {
       if (expense) {
         const postedExpense = await apiInstance.post(expensesEndPoint, expense);
-        console.log(postedExpense);
+        dispatch(appendExpense(postedExpense.data));
       }
       const updatedEmployee = await apiInstance.put(
         employeesEndPoint,

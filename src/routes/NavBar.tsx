@@ -5,6 +5,7 @@ import {
   faHammer,
   faCaravan,
   faShop,
+  faMoneyCheck,
   //faBucket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -12,6 +13,12 @@ import logo from "../assets/Caravan.svg";
 import { DefaultButtonStyle } from "../components/Button/Button.component";
 
 const mapNavElements = [
+  {
+    id: 5,
+    title: "المستثمرين",
+    path: "/investors",
+    icon: faMoneyCheck,
+  },
   {
     id: 4,
     title: "التجار",

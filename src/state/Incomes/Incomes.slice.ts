@@ -31,7 +31,11 @@ const InitialState: Incomes = {
 const incomeSlice = createSlice({
   name: "incomes",
   initialState: InitialState,
-  reducers: {},
+  reducers: {
+    appendIncome: (state, action: PayloadAction<IncomeType>) => {
+      state.incomeList = [action.payload, ...state.incomeList];
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -149,5 +153,5 @@ export const fetchIncomes = createAsyncThunk(
   },
 );
 
-//export const {  } = incomeSlice.actions;
+export const { appendIncome } = incomeSlice.actions;
 export default incomeSlice.reducer;

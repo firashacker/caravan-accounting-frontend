@@ -21,7 +21,7 @@ function Traders() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchTradersIfNeeded(traderList));
+    dispatch(fetchTradersIfNeeded());
   }, []);
   return (
     <>

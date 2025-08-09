@@ -22,7 +22,7 @@ function Employees() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchEmployeesIfNeeded(employeeList));
+    dispatch(fetchEmployeesIfNeeded());
   }, []);
   return (
     <>

@@ -9,9 +9,14 @@ import DefaultButton, {
 import {
   incomesEndPoint,
   fetchIncomeSum,
+  appendIncome,
 } from "../state/Incomes/Incomes.slice";
 import { useDispatch } from "react-redux";
-import { debitsEndPoint, fetchDebitSum } from "../state/Debits/Debits.slice";
+import {
+  appendDebit,
+  debitsEndPoint,
+  fetchDebitSum,
+} from "../state/Debits/Debits.slice";
 import apiInstance from "../lib/axios";
 import type { IncomeType } from "../state/Incomes/Incomes.slice";
 import type { DebitType } from "../state/Debits/Debits.slice";
@@ -63,7 +68,7 @@ function ClientStatement({ clientId }: ClientStatementOptions) {
       newIncomes.map(async (expense) => {
         try {
           const response = await apiInstance.post(incomesEndPoint, expense);
-          console.log(response);
+          dispatch(appendIncome(response.data));
         } catch (error) {
           console.log(error);
           alert(
@@ -76,7 +81,7 @@ function ClientStatement({ clientId }: ClientStatementOptions) {
       newDebits.map(async (debt) => {
         try {
           const response = await apiInstance.post(debitsEndPoint, debt);
-          console.log(response);
+          dispatch(appendDebit(response.data));
         } catch (error) {
           console.log(error);
           alert(
