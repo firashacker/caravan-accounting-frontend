@@ -26,8 +26,22 @@ function App() {
         <Navbar />
         <div dir="rtl" className="pt-18  min-h-screen">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/expense/new" element={<ExtraExpenseUpload />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expense/new"
+              element={
+                <ProtectedRoute>
+                  <ExtraExpenseUpload />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
