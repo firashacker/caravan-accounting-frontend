@@ -44,7 +44,14 @@ function App() {
             />
 
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route
+              path="/signup"
+              element={
+                <ProtectedRoute>
+                  <SignUp />{" "}
+                </ProtectedRoute>
+              }
+            />
             <Route path="/logout" element={<Logout />} />
 
             <Route

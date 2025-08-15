@@ -74,8 +74,11 @@ function EmployeeStatement({
       setEmployee(result.data);
     };
     getEmployee(Number(employeeId));
+
     dispatch(fetchDebtSum({ id: String(employeeId), section: "employee" }));
+
     dispatch(fetchExpenseSum({ id: String(employeeId), section: "employee" }));
+
     setExpenses([]);
     setDebts([]);
     setDebtsAmount(debtSum);
@@ -179,6 +182,7 @@ function EmployeeStatement({
         }
       });
     }
+    setTimeout(() => {}, 500);
     setLoading(false);
     setReset(!reset);
   };
