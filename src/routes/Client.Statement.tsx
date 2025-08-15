@@ -64,8 +64,9 @@ function ClientStatement({ clientId }: ClientStatementOptions) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (newIncomes.length > 0) {
-      newIncomes.map(async (expense) => {
+      await newIncomes.map(async (expense) => {
         try {
           const response = await apiInstance.post(incomesEndPoint, expense);
           dispatch(appendIncome(response.data));
@@ -78,7 +79,7 @@ function ClientStatement({ clientId }: ClientStatementOptions) {
       });
     }
     if (newDebits.length > 0) {
-      newDebits.map(async (debt) => {
+      await newDebits.map(async (debt) => {
         try {
           const response = await apiInstance.post(debitsEndPoint, debt);
           dispatch(appendDebit(response.data));
@@ -90,7 +91,11 @@ function ClientStatement({ clientId }: ClientStatementOptions) {
         }
       });
     }
-    setRefetch(!refetch);
+    console.log("posted!");
+    setTimeout(() => {
+      setRefetch(!refetch);
+      console.log("refetching!");
+    }, 500);
   };
 
   useEffect(() => {

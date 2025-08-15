@@ -54,7 +54,7 @@ function EmployeeStatement({
   const [employee, setEmployee] = useState<EmployeeType>();
   const [method1, setMethod1] = useState("");
   const [method2, setMethod2] = useState("");
-  const [reset, setReset] = useState(false);
+  const [refetch, setRefetch] = useState(false);
 
   useEffect(() => {
     if (debtStatus === "loading" || expenseStatus === "loading")
@@ -83,7 +83,8 @@ function EmployeeStatement({
     setDebts([]);
     setDebtsAmount(debtSum);
     setExpensesAmount(expenseSum);
-  }, [employeeId, reset]);
+    setLoading(false);
+  }, [employeeId, refetch]);
 
   useEffect(() => {
     setDebtsAmount(debtSum);
@@ -157,9 +158,10 @@ function EmployeeStatement({
   const handleSubmit = async () => {
     setLoading(true);
     if (expenses.length > 0) {
-      expenses.map(async (expense) => {
+      await expenses.map(async (expense) => {
         try {
           const response = await apiInstance.post(expensesEndPoint, expense);
+          //console.log(response.data);
           dispatch(appendExpense(response.data));
         } catch (error) {
           console.log(error);
@@ -170,9 +172,10 @@ function EmployeeStatement({
       });
     }
     if (debts.length > 0) {
-      debts.map(async (debt) => {
+      await debts.map(async (debt) => {
         try {
           const response = await apiInstance.post(debtsEndPoint, debt);
+          //console.log(response.data);
           dispatch(appendDebt(response.data));
         } catch (error) {
           console.log(error);
@@ -182,9 +185,12 @@ function EmployeeStatement({
         }
       });
     }
-    setTimeout(() => {}, 500);
-    setLoading(false);
-    setReset(!reset);
+
+    console.log("posted!");
+    setTimeout(() => {
+      setRefetch(!refetch);
+      console.log("refetching !");
+    }, 500);
   };
 
   const resolveMethods1 = () => {
@@ -270,7 +276,7 @@ function EmployeeStatement({
           تسجيل دفعة
         </DefaultButton>
 
-        <SafeButton onButtonClick={() => setReset(!reset)}>
+        <SafeButton onButtonClick={() => setRefetch(!refetch)}>
           التراجع عن جميع الحركات
         </SafeButton>
         <DangerButton onButtonClick={handleSubmit}>تأكيد و حفظ</DangerButton>

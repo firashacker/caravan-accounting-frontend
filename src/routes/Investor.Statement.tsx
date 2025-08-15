@@ -42,8 +42,9 @@ function InvestorStatement({ investorId }: InvestorStatementOptions) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (newExpenses.length > 0) {
-      newExpenses.map(async (expense) => {
+      await newExpenses.map(async (expense) => {
         try {
           const response = await apiInstance.post(expensesEndPoint, expense);
           dispatch(appendExpense(response.data));
@@ -55,7 +56,11 @@ function InvestorStatement({ investorId }: InvestorStatementOptions) {
         }
       });
     }
-    setRefetch(!refetch);
+    console.log("posted!");
+    setTimeout(() => {
+      setRefetch(!refetch);
+      console.log("refetching!");
+    }, 500);
   };
 
   useEffect(() => {

@@ -64,10 +64,13 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
+
     if (newExpenses.length > 0) {
-      newExpenses.map(async (expense) => {
+      await newExpenses.map(async (expense) => {
         try {
           const response = await apiInstance.post(expensesEndPoint, expense);
+          //console.log(response.data);
           dispatch(appendExpense(response.data));
         } catch (error) {
           console.log(error);
@@ -78,9 +81,10 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
       });
     }
     if (newDebts.length > 0) {
-      newDebts.map(async (debt) => {
+      await newDebts.map(async (debt) => {
         try {
           const response = await apiInstance.post(debtsEndPoint, debt);
+          //console.log(response.data);
           dispatch(appendDebt(response.data));
         } catch (error) {
           console.log(error);
@@ -90,7 +94,11 @@ function TraderStatement({ traderId }: TraderStatementOptions) {
         }
       });
     }
-    setRefetch(!refetch);
+    console.log("posted!");
+    setTimeout(() => {
+      setRefetch(!refetch);
+      console.log("refetching!");
+    }, 500);
   };
 
   useEffect(() => {
