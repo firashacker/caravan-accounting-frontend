@@ -1,5 +1,5 @@
 import axios from "axios";
-
+/*
 const getApiEndPoint = () => {
   if (import.meta.env.VITE_BUILD) {
     return `http://${window.location.host}`;
@@ -7,9 +7,11 @@ const getApiEndPoint = () => {
     return import.meta.env.VITE_API_URL;
   }
 };
-export const BaseUrl = getApiEndPoint();
+*/
+//export const BaseUrl = getApiEndPoint();
 //export const BaseUrl = `http://${window.location.host}`;
 //export const BaseUrl = "http://192.168.1.102:4000";
+export const BaseUrl = import.meta.env.VITE_API_URL;
 
 export const uploadInstance = axios.create({
   baseURL: BaseUrl,
