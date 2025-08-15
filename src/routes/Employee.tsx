@@ -5,6 +5,7 @@ import EmployeeStatement from "./Employee.Statement";
 import EmployeeExpenses from "./Employee.Expenses";
 import { Link } from "react-router-dom";
 import { DefaultButtonStyle } from "../components/Button/Button.component";
+import EmployeeDebts from "./Employee.Debts";
 
 function Employee() {
   const employeeId = Number(useParams().id);
@@ -52,6 +53,11 @@ const NavPage = ({
         return <EmployeeExpenses employeeId={employeeId} />;
       }
       break;
+    case "debts":
+      {
+        return <EmployeeDebts employeeId={employeeId} />;
+      }
+      break;
     default:
       return <></>;
       break;
@@ -76,6 +82,9 @@ const NavButtons = ({
             <Link className={DefaultButtonStyle} to={`${endPoint}/expenses`}>
               عرض الدفع
             </Link>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/debts`}>
+              عرض الدوام
+            </Link>
           </div>
         );
       }
@@ -86,6 +95,23 @@ const NavButtons = ({
           <div>
             <Link className={DefaultButtonStyle} to={`${endPoint}/statement`}>
               كشف الحساب
+            </Link>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/debts`}>
+              عرض الدوام
+            </Link>
+          </div>
+        );
+      }
+      break;
+    case "debts":
+      {
+        return (
+          <div>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/statement`}>
+              كشف الحساب
+            </Link>
+            <Link className={DefaultButtonStyle} to={`${endPoint}/expenses`}>
+              عرض الدفع
             </Link>
           </div>
         );

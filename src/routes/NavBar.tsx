@@ -11,8 +11,15 @@ import {
 import { useState } from "react";
 import logo from "../assets/Caravan.svg";
 import { DefaultButtonStyle } from "../components/Button/Button.component";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons/faUserPlus";
 
 const mapNavElements = [
+  {
+    id: 6,
+    title: "اضافة مستخدم",
+    path: "/signup",
+    icon: faUserPlus,
+  },
   {
     id: 5,
     title: "المستثمرين",

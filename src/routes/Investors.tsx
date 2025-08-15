@@ -5,11 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoneyCheck, faUser } from "@fortawesome/free-solid-svg-icons";
 import { DefaultButtonStyle } from "../components/Button/Button.component";
 import { faAdd } from "@fortawesome/free-solid-svg-icons/faAdd";
-import { useEffect } from "react";
-import { fetchInvestorsIfNeeded } from "../state/Investors/Investors.slice";
+import { useEffect, useState } from "react";
+import {
+  fetchInvestorsIfNeeded,
+  type InvestorType,
+} from "../state/Investors/Investors.slice";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
+import FormInput from "../components/FormInput/FormInput.component";
 
 //const paymentMethods = { dayly: "يومي", weekly: "اسبوعي", monthly: "شهري" };
 
@@ -17,12 +21,25 @@ function Investors() {
   const { investorList, status } = useSelector(
     (state: RootState) => state.investors,
   );
-
+  const [search, setSearch] = useState("");
+  const [investors, setInvestors] = useState<InvestorType[]>();
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchInvestorsIfNeeded());
   }, []);
+
+  useEffect(() => {
+    if (search === "") {
+      setInvestors(investorList);
+    } else {
+      setInvestors(
+        investorList.filter((investor) =>
+          investor.name.toLowerCase().includes(search.toLowerCase()),
+        ),
+      );
+    }
+  }, [search, investorList]);
   return (
     <>
       {status === "loading" && <Spinner />}
@@ -39,11 +56,18 @@ function Investors() {
             <FontAwesomeIcon className="p-1" icon={faAdd} />
             <p>اضافة مستثمر</p>
           </Link>
+          <FormInput
+            inputId="search"
+            label="بحث"
+            inputType="text"
+            onInputChange={(event) => setSearch(event.target.value)}
+            inputName="username"
+          />
         </div>
       </div>
       <div className="flex flex-wrap">
-        {investorList &&
-          investorList.map((investor) => (
+        {investors &&
+          investors.map((investor) => (
             <Link
               key={investor.id}
               className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-50 sm:min-w-50 p-4 shdow-2xl`}

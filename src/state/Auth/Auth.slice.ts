@@ -13,13 +13,13 @@ export interface UserType {
 export const authEndPoint = "/api/login";
 
 export interface Auth {
-  user: UserType;
+  user: UserType | undefined;
   error: { message?: string; status?: number };
   status: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const InitialState: Auth = {
-  user: { id: 0, username: "", isAdmin: false, refreshToken: "" },
+  user: undefined,
   error: {},
   status: "idle",
 };
@@ -34,6 +34,7 @@ const authSlice = createSlice({
     localSignOut: (state) => {
       state.user = InitialState.user;
       localStorage.removeItem("refreshToken");
+      state.user = undefined;
       window.location.href = "/login";
     },
   },
@@ -62,7 +63,7 @@ const authSlice = createSlice({
       })
       .addCase(authLogout.fulfilled, (state) => {
         state.status = "succeeded";
-        state.user = InitialState.user;
+        state.user = undefined;
         window.location.href = "/";
       });
   },

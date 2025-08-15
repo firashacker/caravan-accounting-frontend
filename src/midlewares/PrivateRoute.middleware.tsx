@@ -10,7 +10,7 @@ interface Options {
 const ProtectedRoute = ({ children }: Options) => {
   const { user } = useSelector((state: RootState) => state.auth);
   //console.log(user);
-  if (user.id === 0) {
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
   return children;

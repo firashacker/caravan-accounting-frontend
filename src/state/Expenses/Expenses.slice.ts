@@ -7,6 +7,7 @@ export interface ExpenseType {
   createdAt?: string;
   amount: number;
   description: string;
+  work?: boolean;
   traderId?: number;
   employeeId?: number;
   investorId?: number;

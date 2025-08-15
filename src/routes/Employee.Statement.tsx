@@ -1,12 +1,15 @@
 import { useSelector } from "react-redux";
 import { type RootState } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
-
-import { useEffect, useState } from "react";
 import {
-  employeesEndPoint,
-  type EmployeeType,
-} from "../state/Employees/Employees.slice";
+  appendDebt,
+  debtsEndPoint,
+  fetchDebtSum,
+  type DebtType,
+} from "../state/Debts/Debts.slice";
+import { fetchExpenseSum } from "../state/Expenses/Expenses.slice";
+import { useEffect, useState } from "react";
+import { type EmployeeType } from "../state/Employees/Employees.slice";
 import {
   appendExpense,
   expensesEndPoint,
@@ -15,7 +18,6 @@ import {
 
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store";
-import { fetchEmployees } from "../state/Employees/Employees.slice";
 
 import DefaultButton, {
   DangerButton,
@@ -30,17 +32,35 @@ interface EmployeeStatementOptions {
   extraClasses?: string;
   employeeId: number;
 }
+
+//Fix this to play well with new debt changes
 function EmployeeStatement({
   employeeId,
   extraClasses,
 }: EmployeeStatementOptions) {
-  const { status } = useSelector((state: RootState) => state.employees);
-  const [expense, setExpense] = useState<ExpenseType>();
+  const { status: debtStatus, debtSum } = useSelector(
+    (state: RootState) => state.debt,
+  );
+  const { status: expenseStatus, expenseSum } = useSelector(
+    (state: RootState) => state.expense,
+  );
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const [result, setResult] = useState(0);
+  const [expenses, setExpenses] = useState<ExpenseType[]>([]);
+  const [debts, setDebts] = useState<DebtType[]>([]);
+  const [debtsAmount, setDebtsAmount] = useState(0);
+  const [expensesAmount, setExpensesAmount] = useState(0);
   const [employee, setEmployee] = useState<EmployeeType>();
   const [method1, setMethod1] = useState("");
   const [method2, setMethod2] = useState("");
   const [reset, setReset] = useState(false);
+
+  useEffect(() => {
+    if (debtStatus === "loading" || expenseStatus === "loading")
+      setLoading(true);
+    else setLoading(false);
+  }, [debtStatus, expenseStatus]);
 
   useEffect(() => {
     setMethod1(resolveMethods1);
@@ -54,84 +74,113 @@ function EmployeeStatement({
       setEmployee(result.data);
     };
     getEmployee(Number(employeeId));
-    setExpense(undefined);
+    dispatch(fetchDebtSum({ id: String(employeeId), section: "employee" }));
+    dispatch(fetchExpenseSum({ id: String(employeeId), section: "employee" }));
+    setExpenses([]);
+    setDebts([]);
+    setDebtsAmount(debtSum);
+    setExpensesAmount(expenseSum);
   }, [employeeId, reset]);
 
+  useEffect(() => {
+    setDebtsAmount(debtSum);
+  }, [debtSum]);
+  useEffect(() => {
+    setExpensesAmount(expenseSum);
+  }, [expenseSum]);
+
   const handleAddDay = () => {
-    if (employee) {
-      setEmployee({
-        ...employee,
-        paymentUnits: Number(employee?.paymentUnits + 1),
-      });
-    }
+    const amount = Number(employee?.paymentAmount);
+    setDebts([
+      ...debts,
+      {
+        amount: amount,
+        description: "يوم عمل",
+        employeeId: Number(employeeId),
+      },
+    ]);
+    setDebtsAmount(debtsAmount + amount);
   };
 
   const handleAddDays = () => {
-    const days = prompt(`عدد ال${resolveMethods2()}`);
+    const days = prompt(`عدد ال${method2}`);
     if (!days) return;
-    console.log(days);
     if (employee) {
-      setEmployee({
-        ...employee,
-        paymentUnits: Number(employee.paymentUnits + Number(days)),
-      });
+      const amount = Number(Number(days) * employee.paymentAmount);
+      setDebts([
+        ...debts,
+        {
+          amount: amount,
+          description: `${days} ${method2} دوام`,
+          employeeId: Number(employeeId),
+        },
+      ]);
+      setDebtsAmount(debtsAmount + amount);
     }
   };
 
   const handleAddExtra = () => {
-    const amount = prompt("قيمة الدخل نقدأ");
+    const amount = Number(prompt("قيمة الدخل نقدأ"));
+    if (isNaN(amount)) return alert("المدخل ليس رقماً !");
+    const description = prompt("الوصف");
     if (!amount) return;
-    if (employee) {
-      setEmployee({
-        ...employee,
-        extra: employee.extra + Number(amount),
-      });
-    }
+    setDebts([
+      ...debts,
+      {
+        amount: amount,
+        description: String(description),
+        employeeId: Number(employeeId),
+      },
+    ]);
+    setDebtsAmount(debtsAmount + amount);
   };
 
   const handleAddExpense = () => {
-    const amount = prompt("مبلغ الدفعة؟");
+    const amount = Number(prompt("مبلغ الدفعة؟"));
+    if (isNaN(amount)) return alert("المدخل ليس رقماً !");
     if (!amount) return;
-    if (!expense) {
-      setExpense({
-        amount: Number(amount),
+
+    setExpenses([
+      ...expenses,
+      {
+        amount: amount,
         description: "دفعة عمال",
-        employeeId: employee?.id,
-      });
-    } else {
-      setExpense({
-        ...expense,
-        amount: expense.amount + Number(amount),
-      });
-    }
-    if (employee) {
-      setEmployee({
-        ...employee,
-        //paymentUnits: Number(
-        //employee.paymentUnits -
-        //    Math.floor(Number(amount) / employee.paymentAmount),
-        //),
-        balance: employee.balance + Number(amount),
-      });
-    }
+        employeeId: Number(employeeId),
+      },
+    ]);
+    setExpensesAmount(expensesAmount + amount);
   };
 
   const handleSubmit = async () => {
-    try {
-      if (expense) {
-        const postedExpense = await apiInstance.post(expensesEndPoint, expense);
-        dispatch(appendExpense(postedExpense.data));
-      }
-      const updatedEmployee = await apiInstance.put(
-        employeesEndPoint,
-        employee,
-      );
-      console.log(updatedEmployee);
-      setExpense(undefined);
-      dispatch(fetchEmployees());
-    } catch (error) {
-      alert(error);
+    setLoading(true);
+    if (expenses.length > 0) {
+      expenses.map(async (expense) => {
+        try {
+          const response = await apiInstance.post(expensesEndPoint, expense);
+          dispatch(appendExpense(response.data));
+        } catch (error) {
+          console.log(error);
+          alert(
+            "حدث خطأ اثناء تسجيل الدفع الرجاء التأكد من صحة الحسابات واعادة العمليات المطلوبة",
+          );
+        }
+      });
     }
+    if (debts.length > 0) {
+      debts.map(async (debt) => {
+        try {
+          const response = await apiInstance.post(debtsEndPoint, debt);
+          dispatch(appendDebt(response.data));
+        } catch (error) {
+          console.log(error);
+          alert(
+            "حدث خطأ اثناء تسجيل الدوام الرجاء التأكد من صحة الحسابات واعادة العمليات المطلوبة",
+          );
+        }
+      });
+    }
+    setLoading(false);
+    setReset(!reset);
   };
 
   const resolveMethods1 = () => {
@@ -143,23 +192,13 @@ function EmployeeStatement({
     else return "";
   };
 
-  const calculateAmount = () => {
-    if (employee) {
-      const result = Number(
-        employee.paymentAmount * employee.paymentUnits + employee.extra,
-      );
-      return result;
-    }
-    return 0;
-  };
-  const calculateBalance = () => {
-    if (employee) return calculateAmount() - employee.balance;
-    else return 0;
-  };
+  useEffect(() => {
+    setResult(debtsAmount - expensesAmount);
+  }, [debtsAmount, expensesAmount]);
 
   return (
     <>
-      {(!employee || status === "loading") && <Spinner />}
+      {(!employee || loading) && <Spinner />}
       <table
         className={`min-w-full border-s-slate-950 border-2 ${extraClasses}`}
       >
@@ -182,42 +221,11 @@ function EmployeeStatement({
           </tr>
           <tr>
             <td className="border-s-slate-950 border-2 p-2">
-              <div className="flex space-x-2">
-                <p>عدد {method2} (الدوام)</p>
-              </div>
-            </td>
-            <td className="border-s-slate-950 border-2 p-2">
-              {employee?.paymentUnits}
-            </td>
-          </tr>
-          <tr>
-            <td className="border-s-slate-950 border-2 p-2">
-              <div className="flex space-x-2">
-                <p>اضافي (سعر ساعات عمل اضافية او مدخولات اخرى)</p>
-              </div>
-            </td>
-            <td className="border-s-slate-950 p-2 flex">
-              ₪ {employee?.extra}
-              {employee && (
-                <p className="text-red-600 px-3 space-x-3">
-                  أي ما يعادل
-                  {" " +
-                    Number(employee?.extra / employee?.paymentAmount).toFixed(
-                      2,
-                    ) +
-                    " "}
-                  {method1}
-                </p>
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td className="border-s-slate-950 border-2 p-2">
-              <p>المجموع</p>
+              <p>الرصيد</p>
             </td>
             <td className="border-s-slate-950 border-2 p-2">
               <div className="flex space-x-4">
-                <p> ₪ {Math.abs(calculateAmount())}</p>
+                <p> {debtsAmount}</p>
               </div>
             </td>
           </tr>
@@ -227,7 +235,7 @@ function EmployeeStatement({
             </td>
             <td className="border-s-slate-950 border-2 p-2">
               <div className="flex space-x-4">
-                <p> ₪ {employee?.balance}</p>
+                <p> ₪ {expensesAmount}</p>
               </div>
             </td>
           </tr>
@@ -237,10 +245,8 @@ function EmployeeStatement({
             </td>
             <td className="border-s-slate-950 border-2 p-2 bg-green-200">
               <div className="flex space-x-4">
-                <p> ₪ {Math.abs(calculateBalance())}</p>
-                <p className="text-red-500">
-                  {calculateBalance() >= 0 ? "له" : "عليه"}
-                </p>
+                <p> ₪ {Math.abs(result)}</p>
+                <p className="text-red-500">{result >= 0 ? "له" : "عليه"}</p>
               </div>
             </td>
           </tr>

@@ -5,11 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaravan, faUser } from "@fortawesome/free-solid-svg-icons";
 import { DefaultButtonStyle } from "../components/Button/Button.component";
 import { faAdd } from "@fortawesome/free-solid-svg-icons/faAdd";
-import { useEffect } from "react";
-import { fetchClientsIfNeeded } from "../state/Clients/Clients.slice";
+import { useEffect, useState } from "react";
+import {
+  type ClientType,
+  fetchClientsIfNeeded,
+} from "../state/Clients/Clients.slice";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
+import FormInput from "../components/FormInput/FormInput.component";
 
 //const paymentMethods = { dayly: "يومي", weekly: "اسبوعي", monthly: "شهري" };
 
@@ -17,12 +21,25 @@ function Clients() {
   const { clientList, status } = useSelector(
     (state: RootState) => state.clients,
   );
+  const [search, setSearch] = useState("");
+  const [clients, setClients] = useState<ClientType[]>();
 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchClientsIfNeeded());
   }, []);
+  useEffect(() => {
+    if (search === "") {
+      setClients(clientList);
+    } else {
+      setClients(
+        clientList.filter((client) =>
+          client.name.toLowerCase().includes(search.toLowerCase()),
+        ),
+      );
+    }
+  }, [search, clientList]);
   return (
     <>
       {status === "loading" && <Spinner />}
@@ -39,11 +56,18 @@ function Clients() {
             <FontAwesomeIcon className="p-1" icon={faAdd} />
             <p>اضافة عميل</p>
           </Link>
+          <FormInput
+            inputId="search"
+            label="بحث"
+            inputType="text"
+            onInputChange={(event) => setSearch(event.target.value)}
+            inputName="username"
+          />
         </div>
       </div>
       <div className="flex flex-wrap">
-        {clientList &&
-          clientList.map((client) => (
+        {clients &&
+          clients.map((client) => (
             <Link
               key={client.id}
               className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-50 sm:min-w-50 p-4 shdow-2xl`}

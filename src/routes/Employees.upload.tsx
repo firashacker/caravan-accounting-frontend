@@ -9,6 +9,7 @@ import Spinner from "../components/Spinner/Spinner.component";
 import { type EmployeeType } from "../state/Employees/Employees.slice";
 import { fetchEmployees } from "../state/Employees/Employees.slice";
 import { employeesEndPoint } from "../state/Employees/Employees.slice";
+import { debtsEndPoint } from "../state/Debts/Debts.slice";
 
 type PaymentMethod = {
   id: number;
@@ -56,14 +57,17 @@ const EmployeeUpload = () => {
         name: name,
         paymentMethod: paymentMethod,
         paymentAmount: salary,
-        paymentUnits: Math.floor(balance / salary),
-        //paymentUnits: 0,
-        extra: balance % salary,
-        balance: 0,
       };
-
       const response = await apiInstance.post(employeesEndPoint, payload);
       console.log(response);
+
+      const response2 = await apiInstance.post(debtsEndPoint, {
+        amount: balance,
+        description: "رصيد قديم لحظة تسجيل العامل بالبرنامج",
+        employeeId: response.data.id,
+      });
+      console.log(response2);
+
       dispatch(fetchEmployees());
 
       setTimeout(() => window.history.back(), 500);

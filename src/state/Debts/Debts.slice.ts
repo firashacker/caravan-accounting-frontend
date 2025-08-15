@@ -8,6 +8,7 @@ export interface DebtType {
   amount: number;
   description: string;
   traderId?: number;
+  employeeId?: number;
 }
 
 export const debtsEndPoint = "/api/debt";

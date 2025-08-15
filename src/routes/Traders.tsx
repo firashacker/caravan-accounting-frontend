@@ -5,11 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShop, faUser } from "@fortawesome/free-solid-svg-icons";
 import { DefaultButtonStyle } from "../components/Button/Button.component";
 import { faAdd } from "@fortawesome/free-solid-svg-icons/faAdd";
-import { useEffect } from "react";
-import { fetchTradersIfNeeded } from "../state/Traders/Traders.slice";
+import { useEffect, useState } from "react";
+import {
+  fetchTradersIfNeeded,
+  type TraderType,
+} from "../state/Traders/Traders.slice";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
+import FormInput from "../components/FormInput/FormInput.component";
 
 //const paymentMethods = { dayly: "يومي", weekly: "اسبوعي", monthly: "شهري" };
 
@@ -17,12 +21,27 @@ function Traders() {
   const { traderList, status } = useSelector(
     (state: RootState) => state.traders,
   );
+  const [search, setSearch] = useState("");
+  const [traders, setTraders] = useState<TraderType[]>();
 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchTradersIfNeeded());
   }, []);
+
+  useEffect(() => {
+    if (search === "") {
+      setTraders(traderList);
+    } else {
+      setTraders(
+        traderList.filter((trader) =>
+          trader.name.toLowerCase().includes(search.toLowerCase()),
+        ),
+      );
+    }
+  }, [search, traderList]);
+
   return (
     <>
       {status === "loading" && <Spinner />}
@@ -39,11 +58,18 @@ function Traders() {
             <FontAwesomeIcon className="p-1" icon={faAdd} />
             <p>اضافة تاجر</p>
           </Link>
+          <FormInput
+            inputId="search"
+            label="بحث"
+            inputType="text"
+            onInputChange={(event) => setSearch(event.target.value)}
+            inputName="username"
+          />
         </div>
       </div>
       <div className="flex flex-wrap">
-        {traderList &&
-          traderList.map((trader) => (
+        {traders &&
+          traders.map((trader) => (
             <Link
               key={trader.id}
               className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-50 sm:min-w-50 p-4 shdow-2xl`}

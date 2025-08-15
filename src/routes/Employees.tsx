@@ -6,11 +6,15 @@ import { faHammer } from "@fortawesome/free-solid-svg-icons/faHammer";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { DefaultButtonStyle } from "../components/Button/Button.component";
 import { faAdd } from "@fortawesome/free-solid-svg-icons/faAdd";
-import { useEffect } from "react";
-import { fetchEmployeesIfNeeded } from "../state/Employees/Employees.slice";
+import { useEffect, useState } from "react";
+import {
+  type EmployeeType,
+  fetchEmployeesIfNeeded,
+} from "../state/Employees/Employees.slice";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store";
 import Spinner from "../components/Spinner/Spinner.component";
+import FormInput from "../components/FormInput/FormInput.component";
 
 const paymentMethods = { dayly: "يومي", weekly: "اسبوعي", monthly: "شهري" };
 
@@ -18,12 +22,26 @@ function Employees() {
   const { employeeList, status } = useSelector(
     (state: RootState) => state.employees,
   );
+  const [search, setSearch] = useState("");
+  const [employees, setEmployees] = useState<EmployeeType[]>();
 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchEmployeesIfNeeded());
   }, []);
+
+  useEffect(() => {
+    if (search === "") {
+      setEmployees(employeeList);
+    } else {
+      setEmployees(
+        employeeList.filter((employee) =>
+          employee.name.toLowerCase().includes(search.toLowerCase()),
+        ),
+      );
+    }
+  }, [search, employeeList]);
   return (
     <>
       {status === "loading" && <Spinner />}
@@ -40,11 +58,18 @@ function Employees() {
             <FontAwesomeIcon className="p-1" icon={faAdd} />
             <p>اضافة عامل</p>
           </Link>
+          <FormInput
+            inputId="search"
+            label="بحث"
+            inputType="text"
+            onInputChange={(event) => setSearch(event.target.value)}
+            inputName="username"
+          />
         </div>
       </div>
       <div className="flex flex-wrap">
-        {employeeList &&
-          employeeList.map((employee) => (
+        {employees &&
+          employees.map((employee) => (
             <Link
               key={employee.id}
               className={`${DefaultButtonStyle} rounded-md m-4 w-full sm:w-fit min-w-60 p-4 shdow-2xl`}

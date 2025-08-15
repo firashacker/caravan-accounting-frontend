@@ -9,9 +9,6 @@ export interface EmployeeType {
   name: string;
   paymentMethod: "dayly" | "weekly" | "monthly";
   paymentAmount: number;
-  paymentUnits: number;
-  extra: number;
-  balance: number;
 }
 
 export interface Employees {

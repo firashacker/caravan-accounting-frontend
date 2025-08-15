@@ -16,6 +16,8 @@ import Investors from "./routes/Investors";
 import Investor from "./routes/Investor";
 import InvestorsUpload from "./routes/Investors.upload";
 import ProtectedRoute from "./midlewares/PrivateRoute.middleware";
+import SignUp from "./routes/SignUp";
+import ExtraExpenseUpload from "./routes/ExtraExpense.upload";
 
 function App() {
   return (
@@ -25,8 +27,10 @@ function App() {
         <div dir="rtl" className="pt-18  min-h-screen">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/expense/new" element={<ExtraExpenseUpload />} />
 
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/logout" element={<Logout />} />
 
             <Route
