@@ -107,7 +107,8 @@ function EmployeeStatement({
   };
 
   const handleAddDays = () => {
-    const days = prompt(`عدد ال${method2}`);
+    const days = Number(prompt(`عدد ال${method2}`));
+    if (isNaN(days)) return alert("المدخل ليس رقماً !");
     if (!days) return;
     if (employee) {
       const amount = Number(Number(days) * employee.paymentAmount);
@@ -143,12 +144,12 @@ function EmployeeStatement({
     const amount = Number(prompt("مبلغ الدفعة؟"));
     if (isNaN(amount)) return alert("المدخل ليس رقماً !");
     if (!amount) return;
-
+    const description = prompt("الوصف");
     setExpenses([
       ...expenses,
       {
         amount: amount,
-        description: "دفعة عمال",
+        description: description || "دفعة عمال",
         employeeId: Number(employeeId),
       },
     ]);
