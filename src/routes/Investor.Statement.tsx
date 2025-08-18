@@ -99,7 +99,7 @@ function InvestorStatement({ investorId }: InvestorStatementOptions) {
             <td className="border-s-slate-950 border-2 p-2">
               <div className="flex space-x-4">
                 <p> ₪ {Math.abs(overAll)}</p>
-                <p className="text-red-500">{overAll >= 0 ? "له" : "عليه"}</p>
+                <p className="text-red-500">{overAll < 0 ? "له" : "عليه"}</p>
               </div>
             </td>
           </tr>
